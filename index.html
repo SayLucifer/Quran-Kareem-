@@ -30,7 +30,7 @@
             direction: ltr;  /* Ensure LTR for ayah number */
             display: inline-block; /* مهم لإزاحة رقم الآية بشكل صحيح */
         }
-        /* Custom CSS for the select dropdown */
+         /* Custom CSS for the select dropdown */
         .custom-select-wrapper {
             position: relative;
             user-select: none;
@@ -97,6 +97,7 @@
             visibility: visible;
             transform: translateY(0);
         }
+
 
         .custom-options li {
             padding: 0.75rem 1.5rem;    /* تباعد أكبر */
@@ -169,6 +170,14 @@
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
+        .surah-link{
+          color: #1e40af;
+          text-decoration: none;
+        }
+        .surah-link:hover{
+          color: #172554;
+          text-decoration: underline;
+        }
 
     </style>
 </head>
@@ -176,159 +185,77 @@
     <div class="container mx-auto p-4 md:p-6 lg:p-8">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">القرآن الكريم</h1>
 
-        <div class="search-container">
-            <div class="custom-select-wrapper" id="surahSelectWrapper">
-                <div class="custom-select-trigger" id="surahSelectTrigger">
-                    <span>اختر سورة</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                </div>
-                <div class="custom-options" id="surahSelectOptions">
-                    <select id="surahSelect" class="hidden">
-                        <option value="" disabled selected>اختر سورة</option>
-                    </select>
-                    <ul>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="search-input-group">
-                <label for="ayahKeyword">ابحث عن كلمة:</label>
-                <input type="text" id="ayahKeyword" placeholder="أدخل كلمة للبحث" />
-            </div>
-            <button id="searchButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full focus:outline-none focus:shadow-outline">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21.75 21-9-9m9 9-3-3m3 3-3-3m-1.5-15.436a2.393 2.393 0 0 1-3.35-3.35 9.396 9.396 0 0 0-13.184 0 2.393 2.393 0 0 1-3.35 3.35m16.834 16.834a2.393 2.393 0 0 1-3.35 3.35 9.396 9.396 0 0 1-13.184 0 2.393 2.393 0 0 1-3.35-3.35" />
-                </svg>
-            </button>
-        </div>
-
-        <div id="ayahsContainer" class="bg-white shadow-md rounded-md p-6">
-            <p class="no-data-message" id="noDataMessage">اختر سورة لعرض آياتها.</p>
+        <div id="surahIndex" class="bg-white shadow-md rounded-md p-6">
+            <h2 class="text-2xl font-semibold text-center text-gray-700 mb-4">فهرس السور</h2>
+            <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                </ul>
         </div>
     </div>
 
     <script>
-        const surahSelect = document.getElementById('surahSelect');
-        const surahSelectTrigger = document.getElementById('surahSelectTrigger');
-        const surahSelectOptions = document.getElementById('surahSelectOptions');
-        const searchButton = document.getElementById('searchButton');
-        const ayahsContainer = document.getElementById('ayahsContainer');
-        const noDataMessage = document.getElementById('noDataMessage');
-        const ayahKeywordInput = document.getElementById('ayahKeyword');
+        const surahIndex = document.getElementById('surahIndex');
+        const ayahsContainer = document.getElementById('ayahsContainer'); // Make sure this element exists in your HTML
 
-        let isDropdownOpen = false;
-
-        // بيانات السور (مبسطة للعرض)
+        // Surah Data (Complete)
         const surahs = [
-            { number: 1, name: "الفاتحة", arabicName: "الفاتحة", verses: 7 },
-            { number: 2, name: "البقرة", arabicName: "البقرة", verses: 286 },
-            { number: 3, name: "آل عمران", arabicName: "آل عمران", verses: 200 },
-            { number: 4, name: "النساء", arabicName: "النساء", verses: 176 },
-            { number: 5, name: "المائدة", arabicName: "المائدة", verses: 120 },
-            { number: 6, name: "الأنعام", arabicName: "الأنعام", verses: 165 },
-            { number: 7, name: "الأعراف", arabicName: "الأعراف", verses: 206 },
-            { number: 8, name: "الأنفال", arabicName: "الأنفال", verses: 75 },
-            { number: 9, name: "التوبة", arabicName: "التوبة", verses: 129 },
-            { number: 10, name: "يونس", arabicName: "يونس", verses: 109 },
-            { number: 11, name: "هود", arabicName: "هود", verses: 123 },
-            { number: 12, name: "يوسف", arabicName: "يوسف", verses: 111 },
-            { number: 13, name: "الرعد", arabicName: "الرعد", verses: 43 },
-            { number: 14, name: "إبراهيم", arabicName: "إبراهيم", verses: 52 },
-            { number: 15, name: "الحجر", arabicName: "الحجر", verses: 99 },
-            { number: 16, name: "النحل", arabicName: "النحل", verses: 128 },
-            { number: 17, name: "الإسراء", arabicName: "الإسراء", verses: 111 },
-            { number: 18, name: "الكهف", arabicName: "الكهف", verses: 110 },
-            { number: 19, name: "مريم", arabicName: "مريم", verses: 98 },
-            { number: 20, name: "طه", arabicName: "طه", verses: 135 },
-            { number: 21, name: "الأنبياء", arabicName: "الأنبياء", verses: 112 },
-            { number: 22, name: "الحج", arabicName: "الحج", verses: 78 },
-            { number: 23, name: "المؤمنون", arabicName: "المؤمنون", verses: 118 },
-            { number: 24, name: "النور", arabicName: "النور", verses: 64 },
-            { number: 25, name: "الفرقان", arabicName: "الفرقان", verses: 77 },
-            { number: 26, name: "الشعراء", arabicName: "الشعراء", verses: 227 },
-            { number: 27, name: "النمل", arabicName: "النمل", verses: 93 },
-            { number: 28, name: "القصص", arabicName: "القصص", verses: 88 },
-            { number: 29, name: "العنكبوت", arabicName: "العنكبوت", verses: 69 },
-            { number: 30, name: "الروم", arabicName: "الروم", verses: 60 },
-            { number: 31, name: "لقمان", arabicName: "لقمان", verses: 34 },
-            { number: 32, name: "السجدة", arabicName: "السجدة", verses: 30 },
-            { number: 33, name: "الأحزاب", arabicName: "الأحزاب", verses: 73 },
-            { number: 34, name: "سبأ", arabicName: "سبأ", verses: 54 },
-            { number: 35, name: "فاطر", arabicName: "فاطر", verses: 45 },
-            { number: 36, name: "يس", arabicName: "يس", verses: 83 },
-            { number: 37, name: "الصافات", arabicName: "الصافات", verses: 182 },
-            { number: 38, name: "ص", arabicName: "ص", verses: 88 },
-            { number: 39, name: "الزمر", arabicName: "الزمر", verses: 75 },
-            { number: 40, name: "غافر", arabicName: "غافر", verses: 85 },
-            { number: 41, name: "فصلت", arabicName: "فصلت", verses: 54 },
-            { number: 42, name: "الشورى", arabicName: "الشورى", verses: 53 },
-            { number: 43, name: "الزخرف", arabicName: "الزخرف", verses: 89 },
-            { number: 44, name: "الدخان", arabicName: "الدخان", verses: 59 },
-            { number: 45, name: "الجاثية", arabicName: "الجاثية", verses: 37 },
-            { number: 46, name: "الأحقاف", arabicName: "الأحقاف", verses: 35 },
-            { number: 47, name: "محمد", arabicName: "محمد", verses: 38 },
-            { number: 48, name: "الفتح", arabicName: "الفتح", verses: 29 },
-            { number: 49, name: "الحجرات", arabicName: "الحجرات", verses: 18 },
-            { number: 50, name: "ق", arabicName: "ق", verses: 45 },
-            { number: 51, name: "الذاريات", arabicName: "الذاريات", verses: 60 },
-            { number: 52, name: "الطور", arabicName: "الطور", verses: 49 },
-            { number: 53, name: "النجم", arabicName: "النجم", verses: 62 },
-            { number: 54, name: "القمر", arabicName: "القمر", verses: 55 },
-            { number: 55, name: "الرحمن", arabicName: "الرحمن", verses: 78 },
-            { number: 56, name: "الواقعة", arabicName: "الواقعة", verses: 96 },
-            { number: 57, name: "الحديد", arabicName: "الحديد", verses: 29 },
-            { number: 58, name: "المجادلة", arabicName: "المجادلة", verses: 22 },
-            { number: 59, name: "الحشر", arabicName: "الحشر", verses: 24 },
-            { number: 60, name: "الممتحنة", arabicName: "الممتحنة", verses: 13 },
-            { number: 61, name: "الصف", arabicName: "الصف", verses: 14 },
-            { number: 62, name: "الجمعة", arabicName: "الجمعة", verses: 11 },
-            { number: 63, name: "المنافقون", arabicName: "المنافقون", verses: 11 },
-            { number: 64, name: "التغابن", arabicName: "التغابن", verses: 18 },
-            { number: 65, name: "الطلاق", arabicName: "الطلاق", verses: 12 },
-            { number: 66, name: "التحريم", arabicName: "التحريم", verses: 12 },
-            { number: 67, name: "الملك", arabicName: "الملك", verses: 30 },
-            { number: 68, name: "القلم", arabicName: "القلم", verses: 52 },
-            { number: 69, name: "الحاقة", arabicName: "الحاقة", verses: 52 },
-            { number: 70, name: "المعارج", arabicName: "المعارج", verses: 44 },
-            { number: 71, name: "نوح", arabicName: "نوح", verses: 28 },
-            { number: 72, name: "الجن", arabicName: "الجن", verses: 28 },
-            { number: 73, name: "المزمل", arabicName: "المزمل", verses: 20 },
-            { number: 74, name: "المدثر", arabicName: "المدثر", verses: 56 },
-            { number: 75, name: "القيامة", arabicName: "القيامة", verses: 40 },
-            { number: 76, name: "الإنسان", arabicName: "الإنسان", verses: 31 },
-            { number: 77, name: "المرسلات", arabicName: "المرسلات", verses: 50 },
-            { number: 78, name: "النبأ", arabicName: "النبأ", verses: 40 },
-            { number: 79, name: "النازعات", arabicName: "النازعات", verses: 46 },
-            { number: 80, name: "عبس", arabicName: "عبس", verses: 42 },
-            { number: 81, name: "التكوير", arabicName: "التكوير", verses: 29 },
-            { number: 82, name: "الانفطار", arabicName: "الانفطار", verses: 19 },
-            { number: 83, name: "المطففين", arabicName: "المطففين", verses: 36 },
-            { number: 84, name: "الانشقاق", arabicName: "الانشقاق", verses: 25 },
-            { number: 85, name: "البروج", arabicName: "البروج", verses: 22 },
-            { number: 86, name: "الطارق", arabicName: "الطارق", verses: 17 },
-            { number: 87, name: "الأعلى", arabicName: "الأعلى", verses: 19 },
-            { number: 88, name: "الغاشية", arabicName: "الغاشية", verses: 26 },
-            { number: 89, name: "الفجر", arabicName: "الفجر", verses: 30 },
-            { number: 90, name: "البلد", arabicName: "البلد", verses: 20 },
-            { number: 91, name: "الشمس", arabicName: "الشمس", verses: 15 },
-            { number: 92, name: "الليل", arabicName: "الليل", verses: 21 },
-            { number: 93, name: "الضحى", arabicName: "الضحى", verses: 11 },
-            { number: 94, name: "الشرح", arabicName: "الشرح", verses: 8 },
-            { number: 95, name: "التين", arabicName: "التين", verses: 8 },
-            { number: 96, name: "العلق", arabicName: "العلق", verses: 19 },
-            { number: 97, name: "القدر", arabicName: "القدر", verses: 5 },
-            { number: 98, name: "البينة", arabicName: "البينة", verses: 8 },
-            { number: 99, name: "الزلزلة", arabicName: "الزلزلة", verses: 8 },
-            { number: 100, name: "العاديات", arabicName: "العاديات", verses: 11 },
-            { number: 101, name: "القارعة", arabicName: "القارعة", verses: 11 },
-            { number: 102, name: "التكاثر", arabicName: "التكاثر", verses: 8 },
-            { number: 103, name: "العصر", arabicName: "العصر", verses: 3 },
-            { number: 104, name: "الهمزة", arabicName: "الهمزة", verses: 9 },
-            { number: 105, name: "الفيل", arabicName: "الفيل", verses: 5 },
-            { number: 106, name: "قريش", arabicName: "قريش", verses: 4 },
-            { number: 107, name: "الماعون", arabicName: "الماعون", verses: 7 },
-            { number: 108, name: "الكوثر", arabicName: "الكوثر", verses: 3 },
-            { number: 109, name: "الكافرون", arabicName: "الكافرون", verses: 6 },
-            { number: 110, name: "النصر", arabicName: "النصر", verses: 3 },
-            { number: 111, name: "المسد", arabicName: "المسد", verses: 5 },
-            { number
+              { number: 1, name: "الفاتحة", arabicName: "الفاتحة", verses: 7, content: [
+                    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
+                    "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+                    "الرَّحْمَٰنِ الرَّحِيمِ",
+                    "مَالِكِ يَوْمِ الدِّينِ",
+                    "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ",
+                    "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ",
+                    "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ"
+                ]},
+                { number: 2, name: "البقرة", arabicName: "البقرة", verses: 286, content: [
+                    "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ الم",
+                    "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِلْمُتَّقِينَ",
+                    "الَّذِينَ يُؤْمِنُونَ بِالْغَيْبِ وَيُقِيمُونَ الصَّلَاةَ وَمِمَّا رَزَقْنَاهُمْ يُنْفِقُونَ",
+                    "وَالَّذِينَ يُؤْمِنُونَ بِمَا أُنْزِلَ إِلَيْكَ وَمَا أُنْزِلَ مِنْ قَبْلِكَ وَبِالْآخِرَةِ هُمْ يُوقِنُونَ",
+                    "أُولَٰئِكَ عَلَىٰ هُدًى مِنْ رَبِّهِمْ ۖ وَأُولَٰئِكَ هُمُ الْمُفْلِحُونَ",
+                    "إِنَّ الَّذِينَ كَفَرُوا سَوَاءٌ عَلَيْهِمْ أَأَنْذَرْتَهُمْ أَمْ لَمْ تُنْذِرْهُمْ لَا يُؤْمِنُونَ",
+                    "خَتَمَ اللَّهُ عَلَىٰ قُلُوبِهِمْ وَعَلَىٰ سَمْعِهِمْ ۖ وَعَلَىٰ أَبْصَارِهِمْ غِشَاوَةٌ ۖ وَلَهُمْ عَذَابٌ عَظِيمٌ",
+                    "وَمِنَ النَّاسِ مَنْ يَقُولُ آمَنَّا بِاللَّهِ وَبِالْيَوْمِ الْآخِرِ وَمَا هُمْ بِمُؤْمِنِينَ",
+                    "يُخَادِعُونَ اللَّهَ وَالَّذِينَ آمَنُوا وَمَا يَخْدَعُونَ إِلَّا أَنْفُسَهُمْ وَمَا يَشْعُرُونَ",
+                    "فِي قُلُوبِهِمْ مَرَضٌ فَزَادَهُمُ اللَّهُ مَرَضًا ۖ وَلَهُمْ عَذَابٌ أَلِيمٌ بِمَا كَانُوا يَكْذِبُونَ",
+                    "وَإِذَا قِيلَ لَهُمْ لَا تُفْسِدُوا فِي الْأَرْضِ قَالُوا إِنَّمَا نَحْنُ مُصْلِحُونَ",
+                    "أَلَا إِنَّهُمْ هُمُ الْمُفْسِدُونَ وَلَٰكِنْ لَا يَشْعُرُونَ",
+                    "وَإِذَا قِيلَ لَهُمْ آمِنُوا كَمَا آمَنَ النَّاسُ قَالُوا أَنُؤْمِنُ كَمَا آمَنَ السُّفَهَاءُ ۗ أَلَا إِنَّهُمْ هُمُ السُّفَهَاءُ وَلَٰكِنْ لَا يَعْلَمُونَ",
+                    "وَإِذَا لَقُوا الَّذِينَ آمَنُوا قَالُوا آمَنَّا وَإِذَا خَلَوْا إِلَىٰ شَيَاطِينِهِمْ قَالُوا إِنَّا مَعَكُمْ إِنَّمَا نَحْنُ مُسْتَهْزِئُونَ",
+                    "اللَّهُ يَسْتَهْزِئُ بِهِمْ وَيَمُدُّهُمْ فِي طُغْيَانِهِمْ يَعْمَهُونَ",
+                    "أُولَٰئِكَ الَّذِينَ اشْتَرَوُا الضَّلَالَةَ بِالْهُدَىٰ فَمَا رَبِحَتْ تِجَارَتُهُمْ وَمَا كَانُوا مُهْتَدِينَ",
+                    "مَثَلُهُمْ كَمَثَلِ الَّذِي اسْتَوْقَدَ نَارًا فَلَمَّا أَضَاءَتْ مَا حَوْلَهُ ذَهَبَ اللَّهُ بِنُورِهِمْ وَتَرَكَهُمْ فِي ظُلُمَاتٍ لَا يُبْصِرُونَ",
+                    "صُمٌّ بُكْمٌ عُمْيٌ فَهُمْ لَا يَرْجِعُونَ",
+                    "أَوْ كَصَيِّبٍ مِنَ السَّمَاءِ فِيهِ ظُلُمَاتٌ وَرَعْدٌ وَبَرْقٌ يَجْعَلُونَ أَصَابِعَهُمْ فِي آذَانِهِمْ مِنَ الصَّوَاعِقِ حَذَرَ الْمَوْتِ ۚ وَاللَّهُ مُحِيطٌ بِالْكَافِرِينَ",
+                    "يَكَادُ الْبَرْقُ يَخْطَفُ أَبْصَارَهُمْ ۖ كُلَّمَا أَضَاءَ لَهُمْ مَشَوْا فِيهِ وَإِذَا أَظْلَمَ عَلَيْهِمْ قَامُوا ۚ وَلَوْ شَاءَ اللَّهُ لَذَهَبَ بِسَمْعِهِمْ وَأَبْصَارِهِمْ ۚ إِنَّ اللَّهَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+                    "يَا أَيُّهَا النَّاسُ اعْبُدُوا رَبَّكُمُ الَّذِي خَلَقَكُمْ وَالَّذِينَ مِنْ قَبْلِكُمْ لَعَلَّكُمْ تَتَّقُونَ",
+                    "الَّذِي جَعَلَ لَكُمُ الْأَرْضَ فِرَاشًا وَالسَّمَاءَ بِنَاءً وَأَنْزَلَ مِنَ السَّمَاءِ مَاءً فَأَخْرَجَ بِهِ مِنَ الثَّمَرَاتِ رِزْقًا لَكُمْ ۖ فَلَا تَجْعَلُوا لِلَّهِ أَنْدَادًا وَأَنْتُمْ تَعْلَمُونَ",
+                    "وَإِنْ كُنْتُمْ فِي رَيْبٍ مِمَّا نَزَّلْنَا عَلَىٰ عَبْدِنَا فَأْتُوا بِسُورَةٍ مِنْ مِثْلِهِ وَادْعُوا شُهَدَاءَكُمْ مِنْ دُونِ اللَّهِ إِنْ كُنْتُمْ صَادِقِينَ",
+                    "فَإِنْ لَمْ تَفْعَلُوا وَلَنْ تَفْعَلُوا فَاتَّقُوا النَّارَ الَّتِي وَقُودُهَا النَّاسُ وَالْحِجَارَةُ ۖ أُعِدَّتْ لِلْكَافِرِينَ",
+                    "وَبَشِّرِ الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ أَنَّ لَهُمْ جَنَّاتٍ تَجْرِي مِنْ تَحْتِهَا الْأَنْهَارُ ۖ كُلَّمَا رُزِقُوا مِنْهَا مِنْ ثَمَرَةٍ رِزْقًا ۙ قَالُوا هَٰذَا الَّذِي رُزِقْنَا مِنْ قَبْلُ ۖ وَأُتُوا بِهِ مُتَشَابِهًا ۖ وَلَهُمْ فِيهَا أَزْوَاجٌ مُطَهَّرَةٌ ۖ وَهُمْ فِيهَا خَالِدُونَ",
+                    "إِنَّ اللَّهَ لَا يَسْتَحْيِي أَنْ يَضْرِبَ مَثَلًا مَا بَعُوضَةً فَمَا فَوْقَهَا ۚ فَأَمَّا الَّذِينَ آمَنُوا فَيَعْلَمُونَ أَنَّهُ الْحَقُّ مِنْ رَبِّهِمْ ۖ وَأَمَّا الَّذِينَ كَفَرُوا فَيَقُولُونَ مَاذَا أَرَادَ اللَّهُ بِهَٰذَا مَثَلًا ۘ يُضِلُّ بِهِ كَثِيرًا وَيَهْدِي بِهِ كَثِيرًا ۚ وَمَا يُضِلُّ بِهِ إِلَّا الْفَاسِقِينَ",
+                      "الَّذِينَ يَنْقُضُونَ عَهْدَ اللَّهِ مِنْ بَعْدِ مِيثَاقِهِ وَيَقْطَعُونَ مَا أَمَرَ اللَّهُ بِهِ أَنْ يُوصَلَ وَيُفْسِدُونَ فِي الْأَرْضِ ۚ أُولَٰئِكَ هُمُ الْخَاسِرُونَ",
+                      "كَيْفَ تَكْفُرُونَ بِاللَّهِ وَكُنْتُمْ أَمْوَاتًا فَأَحْيَاكُمْ ۖ ثُمَّ يُمِيتُكُمْ ثُمَّ يُحْيِيكُمْ ثُمَّ إِلَيْهِ تُرْجَعُونَ",
+                      "هُوَ الَّذِي خَلَقَ لَكُمْ مَا فِي الْأَرْضِ جَمِيعًا ثُمَّ اسْتَوَىٰ إِلَى السَّمَاءِ فَسَوَّاهُنَّ سَبْعَ سَمَاوَاتٍ ۚ وَهُوَ بِكُلِّ شَيْءٍ عَلِيمٌ",
+                      "وَإِذْ قَالَ رَبُّكَ لِلْمَلَائِكَةِ إِنِّي جَاعِلٌ فِي الْأَرْضِ خَلِيفَةً ۖ قَالُوا أَتَجْعَلُ فِيهَا مَنْ يُفْسِدُ فِيهَا وَيَسْفِكُ الدِّمَاءَ وَنَحْنُ نُسَبِّحُ بِحَمْدِكَ وَنُقَدِّسُ لَكَ ۖ قَالَ إِنِّي أَعْلَمُ مَا لَا تَعْلَمُونَ",
+                      "وَعَلَّمَ آدَمَ الْأَسْمَاءَ كُلَّهَا ثُمَّ عَرَضَهُمْ عَلَى الْمَلَائِكَةِ فَقَالَ أَنْبِئُونِي بِأَسْمَاءِ هَٰؤُلَاءِ إِنْ كُنْتُمْ صَادِقِينَ",
+                      "قَالُوا سُبْحَانَكَ لَا عِلْمَ لَنَا إِلَّا مَا عَلَّمْتَنَا ۖ إِنَّكَ أَنْتَ الْعَلِيمُ الْحَكِيمُ",
+                      "قَالَ يَا آدَمُ أَنْبِئْهُمْ بِأَسْمَائِهِمْ ۖ فَلَمَّا أَنْبَأَهُمْ بِأَسْمَائِهِمْ قَالَ أَلَمْ أَقُلْ لَكُمْ إِنِّي أَعْلَمُ غَيْبَ السَّمَاوَاتِ وَالْأَرْضِ وَأَعْلَمُ مَا تُبْدُونَ وَمَا كُنْتُمْ تَكْتُمُونَ",
+                      "وَإِذْ قُلْنَا لِلْمَلَائِكَةِ اسْجُدُوا لِآدَمَ فَسَجَدُوا إِلَّا إِبْلِيسَ أَبَىٰ وَاسْتَكْبَرَ وَكَانَ مِنَ الْكَافِرِينَ",
+                      "وَقُلْنَا يَا آدَمُ اسْكُنْ أَنْتَ وَزَوْجُكَ الْجَنَّةَ وَكُلَا مِنْهَا رَغَدًا حَيْثُ شِئْتُمَا وَلَا تَقْرَبَا هَٰذِهِ الشَّجَرَةَ فَتَكُونَا مِنَ الظَّالِمِينَ",
+                      "فَأَزَلَّهُمَا الشَّيْطَانُ عَنْهَا فَأَخْرَجَهُمَا مِمَّا كَانَا فِيهِ ۖ وَقُلْنَا اهْبِطُوا بَعْضُكُمْ لِبَعْضٍ عَدُوٌّ ۖ وَلَكُمْ فِي الْأَرْضِ مُسْتَقَرٌّ وَمَتَاعٌ إِلَىٰ حِينٍ",
+                      "فَتَلَقَّىٰ آدَمُ مِنْ رَبِّهِ كَلِمَاتٍ فَتَابَ عَلَيْهِ ۚ إِنَّهُ هُوَ التَّوَّابُ الرَّحِيمُ",
+                      "قُلْنَا اهْبِطُوا مِنْهَا جَمِيعًا ۖ فَإِمَّا يَأْتِيَنَّكُمْ مِنِّي هُدًى فَمَنْ تَبِعَ هُدَايَ فَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ",
+                      "وَالَّذِينَ كَفَرُوا وَكَذَّبُوا بِآيَاتِنَا أُولَٰئِكَ أَصْحَابُ النَّارِ ۖ هُمْ فِيهَا خَالِدُونَ",
+                      "يَا بَنِي إِسْرَائِيلَ اذْكُرُوا نِعْمَتِيَ الَّتِي أَنْعَمْتُ عَلَيْكُمْ وَأَوْفُوا بِعَهْدِي أُوفِ بِعَهْدِكُمْ ۚ وَإِيَّايَ فَارْهَبُونِ",
+                      "وَآمِنُوا بِمَا أَنْزَلْتُ مُصَدِّقًا لِمَا مَعَكُمْ وَلَا تَكُونُوا أَوَّلَ كَافِرٍ بِهِ ۖ وَلَا تَشْتَرُوا بِآيَاتِي ثَمَنًا قَلِيلًا ۖ وَإِيَّايَ فَاتَّقُونِ",
+                      "وَلَا تَلْبِسُوا الْحَقَّ بِالْبَاطِلِ وَتَكْتُمُوا الْحَقَّ وَأَنْتُمْ تَعْلَمُونَ",
+                      "وَأَقِيمُوا الصَّلَاةَ وَآتُوا الزَّكَاةَ وَارْكَعُوا مَعَ الرَّاكِعِينَ",
+                      "أَتَأْمُرُونَ النَّاسَ بِالْبِرِّ وَتَنْسَوْنَ أَنْفُسَكُمْ وَأَنْتُمْ تَتْلُونَ الْكِتَابَ ۚ أَفَلَا تَعْقِلُونَ",
+                      "وَاسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ وَإِنَّهَا لَكَبِيرَةٌ إِلَّا عَلَى الْخَاشِعِينَ",
+                      "الَّذِينَ يَظُنُّونَ أَنَّهُمْ مُلَاقُو رَبِّهِمْ وَأَنَّهُمْ إِلَيْهِ رَاجِعُونَ",
+                      "يَا بَنِي إِسْرَائِيلَ اذْكُرُوا نِعْمَتِيَ الَّتِي أَنْعَمْتُ عَلَيْكُمْ وَأَنِّي فَضَّلْتُكُمْ عَلَى الْعَالَمِينَ",
+                      "وَاتَّقُوا يَوْمًا لَا تَجْزِي نَفْسٌ عَنْ نَفْسٍ شَيْئًا وَلَا يُقْبَلُ مِنْهَا شَفَاعَةٌ وَلَا يُؤْخَذُ مِنْهَا عَدْلٌ وَلَا هُمْ يُنْصَرُونَ",
+                      "وَإِذْ نَجَّيْنَاكُمْ مِنْ آلِ فِرْعَوْنَ يَسُومُونَكُمْ سُوءَ الْعَذَابِ يُذَبِّحُونَ أَبْنَاءَكُمْ وَيَسْتَحْيُونَ نِسَاءَكُمْ ۚ وَفِي ذَٰلِكُمْ بَلَاءٌ مِنْ رَبِّكُمْ عَظِيمٌ",
+                      "وَإِذْ فَرَقْنَا بِكُمُ الْبَحْرَ فَأَنْجَيْنَاكُمْ وَأَغْرَقْنَا آلَ فِرْعَوْنَ وَأَنْتُمْ تَنْظُرُونَ",
+                      "وَإِذْ وَاعَدْنَا مُوسَىٰ أَرْبَعِينَ لَيْلَةً ثُمَّ اتَّخَذْتُمُ الْعِجْلَ مِنْ بَعْدِهِ
