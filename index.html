@@ -29,32 +29,24 @@
   </div>
 
   <script>
-    const surahNames = [
-      "الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس",
-      "هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه",
-      "الأنبياء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم",
-      "لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر",
-      "فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق",
-      "الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة",
-      "الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج",
-      "نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس",
-      "التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد",
-      "الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات",
-      "القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر",
-      "المسد","الإخلاص","الفلق","الناس"
-    ];
-
     const listContainer = document.getElementById("surah-list");
 
-    surahNames.forEach((name, index) => {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = `surah${index + 1}.html`;
-      a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-gray-50 hover:bg-gray-100 transition-colors duration-200";
-      a.textContent = name;
-      li.appendChild(a);
-      listContainer.appendChild(li);
-    });
+    fetch("https://api.alquran.cloud/v1/surah")
+      .then(response => response.json())
+      .then(data => {
+        data.data.forEach(surah => {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.href = `#`; // Tu peux changer ça vers `surah${surah.number}.html` si tu veux créer des pages individuelles
+          a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
+          a.textContent = `${surah.number}. ${surah.name}`;
+          li.appendChild(a);
+          listContainer.appendChild(li);
+        });
+      })
+      .catch(() => {
+        listContainer.innerHTML = "<li>تعذر تحميل البيانات. تحقق من الاتصال بالإنترنت.</li>";
+      });
   </script>
 </body>
 </html>
