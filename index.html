@@ -37,7 +37,7 @@
         data.data.forEach(surah => {
           const li = document.createElement("li");
           const a = document.createElement("a");
-          a.href = `#`; // Tu peux changer ça vers `surah${surah.number}.html` si tu veux créer des pages individuelles
+          a.href = `surah${surah.number}.html`; // ✅ Corrigé ici
           a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
           a.textContent = `${surah.number}. ${surah.name}`;
           li.appendChild(a);
