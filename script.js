@@ -41,22 +41,6 @@ fetch("https://api.alquran.cloud/v1/surah")
       surahTitle.className = "text-xl font-bold mb-2 text-center text-blue-600";
       surahTitle.textContent = `${surah.number}. ${surah.name}`;
 
-      // Audio button
-      const audioButton = document.createElement("button");
-      audioButton.textContent = "🔊 استماع";
-      audioButton.className = "bg-yellow-500 text-white px-4 py-2 rounded mb-2 w-full";
-      audioButton.addEventListener("click", () => {
-        // Use the correct audio link from the API (you might need to customize the API if needed)
-        const audioUrl = `https://cdn.islamic.network/quran/audio/64/ar.alafasy/${surah.number}.mp3`; // This URL needs to be validated
-
-        // If the API provides an audio URL for the specific Surah, use that:
-        // For example:
-        // const audioUrl = surah.audio_url; // Use the audio URL if available in the data
-
-        const audio = new Audio(audioUrl);
-        audio.play();
-      });
-
       // Bookmark button
       const bookmarkButton = document.createElement("button");
       bookmarkButton.textContent = "📌";
@@ -79,7 +63,6 @@ fetch("https://api.alquran.cloud/v1/surah")
 
       // Append all elements to the list item
       li.appendChild(surahTitle);
-      li.appendChild(audioButton);
       li.appendChild(bookmarkButton);
       listContainer.appendChild(li);
     });
@@ -140,4 +123,3 @@ window.onload = () => {
   addDuaa();
   setInterval(addDuaa, 3000);
 };
-
