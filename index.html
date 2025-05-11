@@ -3,13 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Surah {number}</title>
+  <title>Quran Navigator</title>
   
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap" rel="stylesheet">
+  
+  <!-- Manifest link -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Theme color for mobile -->
+  <meta name="theme-color" content="#ffffff">
 
   <style>
     body {
@@ -23,99 +29,25 @@
       text-align: center;
       margin-bottom: 1rem;
     }
-    .ayat {
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #f0f0f0;
-      border-radius: 5px;
-    }
-    .editable {
-      border: none;
-      background-color: transparent;
-      width: 100%;
-    }
-    .bookmark-btn {
-      margin-left: 10px;
-      background-color: #4CAF50;
-      color: white;
-      padding: 5px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .bookmarked {
-      background-color: #FFEB3B; /* Yellow background for bookmarked Ayah */
-    }
   </style>
 </head>
 <body id="body" class="bg-gray-100 text-gray-900 transition duration-300">
-
-  <div class="container mx-auto p-4 md:p-6 lg:p-8">
-    <h1 class="surah-title">Surah {number} - {name}</h1>
-    <div id="ayat-list"></div>
+  <!-- Bouton de changement de thème -->
+  <div class="flex justify-end p-4">
+    <button id="theme-toggle" class="bg-gray-800 text-white px-4 py-2 rounded">
+      🌙 الوضع الليلي
+    </button>
   </div>
 
+  <div class="container mx-auto p-4 md:p-6 lg:p-8">
+    <h1 class="surah-title">القرآن الكريم</h1>
+    <nav class="mb-8">
+      <ul id="surah-list" class="flex justify-center flex-wrap gap-2"></ul>
+    </nav>
+  </div>
+
+  <!-- Link to the external JavaScript file -->
   <script src="script.js"></script>
-
-  <script>
-    // Get the Surah number from the URL
-    const surahNumber = window.location.pathname.split('/').pop().replace('surah', '').replace('.html', '');
-    
-    // Fetch Surah data and display Ayat
-    fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`)
-      .then(response => response.json())
-      .then(data => {
-        const ayatList = document.getElementById("ayat-list");
-        data.data.ayahs.forEach((ayat, index) => {
-          const div = document.createElement("div");
-          div.className = "ayat";
-
-          // Create an editable area for each Ayat
-          const input = document.createElement("textarea");
-          input.className = "editable";
-          input.value = ayat.text;
-          input.addEventListener("blur", () => saveAyat(surahNumber, index + 1, input.value)); // Save when losing focus
-
-          // Create a bookmark button for each Ayat
-          const bookmarkButton = document.createElement("button");
-          bookmarkButton.textContent = "📌";
-          bookmarkButton.className = "bookmark-btn";
-          
-          // Check if the Ayat is bookmarked
-          if (localStorage.getItem(`bookmark_${surahNumber}_${index + 1}`)) {
-            bookmarkButton.textContent = "✅ Bookmarked";
-            bookmarkButton.classList.add("bookmarked");
-          }
-
-          // Bookmark button event listener
-          bookmarkButton.addEventListener("click", () => {
-            const isBookmarked = localStorage.getItem(`bookmark_${surahNumber}_${index + 1}`);
-            if (isBookmarked) {
-              localStorage.removeItem(`bookmark_${surahNumber}_${index + 1}`);
-              bookmarkButton.textContent = "📌";
-              bookmarkButton.classList.remove("bookmarked");
-            } else {
-              localStorage.setItem(`bookmark_${surahNumber}_${index + 1}`, ayat.text);
-              bookmarkButton.textContent = "✅ Bookmarked";
-              bookmarkButton.classList.add("bookmarked");
-            }
-          });
-
-          // Append the Ayat input and bookmark button to the div
-          div.appendChild(input);
-          div.appendChild(bookmarkButton);
-          ayatList.appendChild(div);
-        });
-      })
-      .catch(() => {
-        const ayatList = document.getElementById("ayat-list");
-        ayatList.innerHTML = "<p>تعذر تحميل الآيات. تحقق من الاتصال بالإنترنت.</p>";
-      });
-
-    // Save Ayat to localStorage
-    function saveAyat(surah, ayah, text) {
-      localStorage.setItem(`ayat_${surah}_${ayah}`, text);
-    }
-  </script>
-
+  
 </body>
 </html>
