@@ -34,35 +34,33 @@ fetch("https://api.alquran.cloud/v1/surah")
   .then(data => {
     data.data.forEach(surah => {
       const li = document.createElement("li");
-      li.className = "max-w-sm w-full bg-white shadow-lg rounded-lg p-4 mb-4";
-
-      // Surah title and number
-      const surahTitle = document.createElement("h3");
-      surahTitle.className = "text-xl font-bold mb-2 text-center text-blue-600";
-      surahTitle.textContent = `${surah.number}. ${surah.name}`;
-
-      // Bookmark button
+      const a = document.createElement("a");
+      a.href = surah${surah.number}.html;  // Navigate to Surah page
+      a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
+      a.textContent = ${surah.number}. ${surah.name};
+      
+      // Create a bookmark button for each surah
       const bookmarkButton = document.createElement("button");
       bookmarkButton.textContent = "📌";
-      bookmarkButton.className = "bg-green-500 text-white px-4 py-2 rounded w-full";
+      bookmarkButton.className = "ml-2 bg-green-500 text-white px-2 py-1 rounded";
       
-      if (localStorage.getItem(`bookmark_${surah.number}`)) {
+      // Check if the Surah is already bookmarked
+      if (localStorage.getItem(bookmark_${surah.number})) {
         bookmarkButton.textContent = "✅ Bookmarked";
       }
 
       bookmarkButton.addEventListener("click", () => {
-        const isBookmarked = localStorage.getItem(`bookmark_${surah.number}`);
+        const isBookmarked = localStorage.getItem(bookmark_${surah.number});
         if (isBookmarked) {
-          localStorage.removeItem(`bookmark_${surah.number}`);
+          localStorage.removeItem(bookmark_${surah.number});
           bookmarkButton.textContent = "📌";
         } else {
-          localStorage.setItem(`bookmark_${surah.number}`, surah.name);
+          localStorage.setItem(bookmark_${surah.number}, surah.name);
           bookmarkButton.textContent = "✅ Bookmarked";
         }
       });
 
-      // Append all elements to the list item
-      li.appendChild(surahTitle);
+      li.appendChild(a);
       li.appendChild(bookmarkButton);
       listContainer.appendChild(li);
     });
@@ -94,32 +92,43 @@ const duas = [
   "اللهم اجعلني من الذين يقرؤون القرآن في الدنيا، ويدخلون به الجنة في الآخرة."
 ];
 
+// Function to get a random duaa
 function getRandomDuaa() {
   return duas[Math.floor(Math.random() * duas.length)];
 }
 
+// Function to display the duaa in the container
 function addDuaa() {
   const duaaText = getRandomDuaa();
-  let duaaContainer = document.getElementById("duaa-container");
+  const duaaContainer = document.getElementById("duaa-container");
 
+  // If duaa container does not exist, create it
   if (!duaaContainer) {
-    duaaContainer = document.createElement("div");
+    const duaaContainer = document.createElement("div");
     duaaContainer.id = "duaa-container";
     duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
 
+    // Add duaa text
     const duaaParagraph = document.createElement("p");
     duaaParagraph.id = "duaa-text";
     duaaParagraph.textContent = duaaText;
 
+    // Append the duaa text to the container
     duaaContainer.appendChild(duaaParagraph);
+
+    // Append the duaa container to the body
     document.body.appendChild(duaaContainer);
   } else {
+    // If duaa container exists, just update the text
     const duaaParagraph = duaaContainer.querySelector("#duaa-text");
     duaaParagraph.textContent = duaaText;
   }
 }
 
+// Call the function to add duaa when the page loads
 window.onload = () => {
-  addDuaa();
+  addDuaa(); // Add initial duaa
+
+  // Change duaa every 3 seconds
   setInterval(addDuaa, 3000);
 };
