@@ -1,4 +1,3 @@
-
 // Function to change between light and dark themes
 const toggle = document.getElementById("theme-toggle");
 const body = document.getElementById("body");
@@ -35,25 +34,34 @@ fetch("https://api.alquran.cloud/v1/surah")
   .then(data => {
     data.data.forEach(surah => {
       const li = document.createElement("li");
-      li.className = "flex items-center gap-2";
+      li.className = "max-w-sm w-full bg-white shadow-lg rounded-lg p-4 mb-4";
 
-      const a = document.createElement("a");
-      a.href = `surah${surah.number}.html`;
-      a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
-      a.textContent = `${surah.number}. ${surah.name}`;
+      // Surah title and number
+      const surahTitle = document.createElement("h3");
+      surahTitle.className = "text-xl font-bold mb-2 text-center text-blue-600";
+      surahTitle.textContent = `${surah.number}. ${surah.name}`;
 
+      // Audio button
       const audioButton = document.createElement("button");
-      audioButton.textContent = "🔊";
-      audioButton.className = "bg-yellow-500 text-white px-2 py-1 rounded";
+      audioButton.textContent = "🔊 استماع";
+      audioButton.className = "bg-yellow-500 text-white px-4 py-2 rounded mb-2 w-full";
       audioButton.addEventListener("click", () => {
-        const audio = new Audio(`https://cdn.islamic.network/quran/audio/64/ar.alafasy/${surah.number}.mp3`);
+        // Use the correct audio link from the API (you might need to customize the API if needed)
+        const audioUrl = `https://cdn.islamic.network/quran/audio/64/ar.alafasy/${surah.number}.mp3`; // This URL needs to be validated
+
+        // If the API provides an audio URL for the specific Surah, use that:
+        // For example:
+        // const audioUrl = surah.audio_url; // Use the audio URL if available in the data
+
+        const audio = new Audio(audioUrl);
         audio.play();
       });
 
+      // Bookmark button
       const bookmarkButton = document.createElement("button");
       bookmarkButton.textContent = "📌";
-      bookmarkButton.className = "bg-green-500 text-white px-2 py-1 rounded";
-
+      bookmarkButton.className = "bg-green-500 text-white px-4 py-2 rounded w-full";
+      
       if (localStorage.getItem(`bookmark_${surah.number}`)) {
         bookmarkButton.textContent = "✅ Bookmarked";
       }
@@ -69,7 +77,8 @@ fetch("https://api.alquran.cloud/v1/surah")
         }
       });
 
-      li.appendChild(a);
+      // Append all elements to the list item
+      li.appendChild(surahTitle);
       li.appendChild(audioButton);
       li.appendChild(bookmarkButton);
       listContainer.appendChild(li);
@@ -131,3 +140,4 @@ window.onload = () => {
   addDuaa();
   setInterval(addDuaa, 3000);
 };
+
