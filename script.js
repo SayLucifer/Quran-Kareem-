@@ -109,26 +109,3 @@ function addDuaa() {
     duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
 
     // Add duaa text
-    const duaaParagraph = document.createElement("p");
-    duaaParagraph.id = "duaa-text";
-    duaaParagraph.textContent = duaaText;
-
-    // Append the duaa text to the container
-    duaaContainer.appendChild(duaaParagraph);
-
-    // Append the duaa container to the body
-    document.body.appendChild(duaaContainer);
-  } else {
-    // If duaa container exists, just update the text
-    const duaaParagraph = duaaContainer.querySelector("#duaa-text");
-    duaaParagraph.textContent = duaaText;
-  }
-}
-
-// Call the function to add duaa when the page loads
-window.onload = () => {
-  addDuaa(); // Add initial duaa
-
-  // Change duaa every 4 seconds
-  setInterval(addDuaa, 4000);
-};
