@@ -46,82 +46,8 @@
     </nav>
   </div>
 
-  <script>
-    // Fonction pour changer le thème entre clair et sombre
-    const toggle = document.getElementById("theme-toggle");
-    const body = document.getElementById("body");
-
-    // Si l'utilisateur a déjà choisi le thème sombre
-    if (localStorage.getItem("theme") === "dark") {
-      body.classList.replace("bg-gray-100", "bg-gray-900");
-      body.classList.replace("text-gray-900", "text-gray-100");
-      toggle.textContent = "☀️ الوضع النهاري";
-    }
-
-    // Fonction d'écoute du bouton
-    toggle.addEventListener("click", () => {
-      const isDark = body.classList.contains("bg-gray-900");
-
-      if (isDark) {
-        body.classList.replace("bg-gray-900", "bg-gray-100");
-        body.classList.replace("text-gray-100", "text-gray-900");
-        toggle.textContent = "🌙 الوضع الليلي";
-        localStorage.setItem("theme", "light");
-      } else {
-        body.classList.replace("bg-gray-100", "bg-gray-900");
-        body.classList.replace("text-gray-900", "text-gray-100");
-        toggle.textContent = "☀️ الوضع النهاري";
-        localStorage.setItem("theme", "dark");
-      }
-    });
-
-    // Charger les sourates de l'API
-    const listContainer = document.getElementById("surah-list");
-
-    fetch("https://api.alquran.cloud/v1/surah")
-      .then(response => response.json())
-      .then(data => {
-        data.data.forEach(surah => {
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.href = `surah${surah.number}.html`;  // Dirige vers la page de chaque sourate
-          a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
-          a.textContent = `${surah.number}. ${surah.name}`;
-          li.appendChild(a);
-          listContainer.appendChild(li);
-        });
-      })
-      .catch(() => {
-        listContainer.innerHTML = "<li>تعذر تحميل البيانات. تحقق من الاتصال بالإنترنت.</li>";
-      });
-
-    // Register the service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((error) => {
-          console.log('Service Worker registration failed:', error);
-        });
-    }
-  </script>
-
-  <!-- Add the service worker to make the app a PWA -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .then((registration) => {
-            console.log('Service Worker registered with scope:', registration.scope);
-          })
-          .catch((error) => {
-            console.log('Service Worker registration failed:', error);
-          });
-      });
-    }
-  </script>
-
+  <!-- Link to the external JavaScript file -->
+  <script src="script.js"></script>
+  
 </body>
 </html>
