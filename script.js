@@ -83,28 +83,53 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Function to add duaa at the bottom of the page
-function addDuaa() {
-  const duaaText = "اللهم اجعل هذا الكتاب صدقة عني وعن كل من أحببت وأحبني، وأسألك يا الله أن تجمعنا في الجنة.";
-  
-  // Create the duaa container if it doesn't exist
-  const duaaContainer = document.createElement("div");
-  duaaContainer.id = "duaa-container";
-  duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
-  
-  // Add duaa text
-  const duaaParagraph = document.createElement("p");
-  duaaParagraph.id = "duaa-text";
-  duaaParagraph.textContent = duaaText;
-  
-  // Append the duaa text to the container
-  duaaContainer.appendChild(duaaParagraph);
+// Array of duas
+const duas = [
+  "اللهم اجعل هذا الكتاب صدقة عني وعن كل من أحببت وأحبني، وأسألك يا الله أن تجمعنا في الجنة.",
+  "اللهم اجعل القرآن شفيعاً لنا يوم القيامة.",
+  "اللهم اجعلني من أهل القرآن الذين هم أهل الله وخاصته.",
+  "اللهم اجعل القرآن نوراً في قلبي، وشفاءً لصدري، وجلاءً لأحزاني.",
+  "اللهم اجعلني من الذين يقرؤون القرآن في الدنيا، ويدخلون به الجنة في الآخرة."
+];
 
-  // Append the duaa container to the body (or to a specific element if needed)
-  document.body.appendChild(duaaContainer);
+// Function to get a random duaa
+function getRandomDuaa() {
+  return duas[Math.floor(Math.random() * duas.length)];
+}
+
+// Function to display the duaa in the container
+function addDuaa() {
+  const duaaText = getRandomDuaa();
+  const duaaContainer = document.getElementById("duaa-container");
+
+  // If duaa container does not exist, create it
+  if (!duaaContainer) {
+    const duaaContainer = document.createElement("div");
+    duaaContainer.id = "duaa-container";
+    duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
+
+    // Add duaa text
+    const duaaParagraph = document.createElement("p");
+    duaaParagraph.id = "duaa-text";
+    duaaParagraph.textContent = duaaText;
+
+    // Append the duaa text to the container
+    duaaContainer.appendChild(duaaParagraph);
+
+    // Append the duaa container to the body
+    document.body.appendChild(duaaContainer);
+  } else {
+    // If duaa container exists, just update the text
+    const duaaParagraph = duaaContainer.querySelector("#duaa-text");
+    duaaParagraph.textContent = duaaText;
+  }
 }
 
 // Call the function to add duaa when the page loads
 window.onload = () => {
-  addDuaa();
+  addDuaa(); // Add initial duaa
+  const generateButton = document.getElementById("generate-duaa");
+  if (generateButton) {
+    generateButton.addEventListener("click", addDuaa); // Add event listener to generate button
+  }
 };
