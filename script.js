@@ -82,3 +82,29 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
+
+// Function to add duaa at the bottom of the page
+function addDuaa() {
+  const duaaText = "اللهم اجعل هذا الكتاب صدقة عني وعن كل من أحببت وأحبني، وأسألك يا الله أن تجمعنا في الجنة.";
+  
+  // Create the duaa container if it doesn't exist
+  const duaaContainer = document.createElement("div");
+  duaaContainer.id = "duaa-container";
+  duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
+  
+  // Add duaa text
+  const duaaParagraph = document.createElement("p");
+  duaaParagraph.id = "duaa-text";
+  duaaParagraph.textContent = duaaText;
+  
+  // Append the duaa text to the container
+  duaaContainer.appendChild(duaaParagraph);
+
+  // Append the duaa container to the body (or to a specific element if needed)
+  document.body.appendChild(duaaContainer);
+}
+
+// Call the function to add duaa when the page loads
+window.onload = () => {
+  addDuaa();
+};
