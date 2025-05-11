@@ -13,7 +13,10 @@
   
   <!-- Manifest link -->
   <link rel="manifest" href="/manifest.json">
-  
+
+  <!-- Theme color for mobile -->
+  <meta name="theme-color" content="#ffffff">
+
   <style>
     body {
       font-family: 'Scheherazade New', serif;
@@ -103,5 +106,22 @@
         });
     }
   </script>
+
+  <!-- Add the service worker to make the app a PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
+
 </body>
 </html>
