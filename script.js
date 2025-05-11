@@ -1,4 +1,5 @@
-// 🌙 Theme Toggle
+
+// Function to change between light and dark themes
 const toggle = document.getElementById("theme-toggle");
 const body = document.getElementById("body");
 
@@ -26,7 +27,7 @@ toggle.addEventListener("click", () => {
   }
 });
 
-// 📖 Load Surahs from API
+// Load Surahs dynamically from the API
 const listContainer = document.getElementById("surah-list");
 
 fetch("https://api.alquran.cloud/v1/surah")
@@ -34,17 +35,25 @@ fetch("https://api.alquran.cloud/v1/surah")
   .then(data => {
     data.data.forEach(surah => {
       const li = document.createElement("li");
+      li.className = "flex items-center gap-2";
+
       const a = document.createElement("a");
       a.href = `surah${surah.number}.html`;
       a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
       a.textContent = `${surah.number}. ${surah.name}`;
 
-      // 📌 Bookmark button
+      const audioButton = document.createElement("button");
+      audioButton.textContent = "🔊";
+      audioButton.className = "bg-yellow-500 text-white px-2 py-1 rounded";
+      audioButton.addEventListener("click", () => {
+        const audio = new Audio(`https://cdn.islamic.network/quran/audio/64/ar.alafasy/${surah.number}.mp3`);
+        audio.play();
+      });
+
       const bookmarkButton = document.createElement("button");
       bookmarkButton.textContent = "📌";
-      bookmarkButton.className = "ml-2 bg-green-500 text-white px-2 py-1 rounded";
+      bookmarkButton.className = "bg-green-500 text-white px-2 py-1 rounded";
 
-      // Check if bookmarked
       if (localStorage.getItem(`bookmark_${surah.number}`)) {
         bookmarkButton.textContent = "✅ Bookmarked";
       }
@@ -61,6 +70,7 @@ fetch("https://api.alquran.cloud/v1/surah")
       });
 
       li.appendChild(a);
+      li.appendChild(audioButton);
       li.appendChild(bookmarkButton);
       listContainer.appendChild(li);
     });
@@ -69,7 +79,7 @@ fetch("https://api.alquran.cloud/v1/surah")
     listContainer.innerHTML = "<li>تعذر تحميل البيانات. تحقق من الاتصال بالإنترنت.</li>";
   });
 
-// 🛠️ Register the service worker for PWA
+// Register the service worker to make it a PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -83,7 +93,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// 🕊️ Rotating Duas
+// Array of duas
 const duas = [
   "اللهم اجعل هذا الكتاب صدقة عني وعن كل من أحببت وأحبني، وأسألك يا الله أن تجمعنا في الجنة.",
   "اللهم اجعل القرآن شفيعاً لنا يوم القيامة.",
@@ -98,26 +108,25 @@ function getRandomDuaa() {
 
 function addDuaa() {
   const duaaText = getRandomDuaa();
-  const duaaContainer = document.getElementById("duaa-container");
+  let duaaContainer = document.getElementById("duaa-container");
 
   if (!duaaContainer) {
-    const newContainer = document.createElement("div");
-    newContainer.id = "duaa-container";
-    newContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
+    duaaContainer = document.createElement("div");
+    duaaContainer.id = "duaa-container";
+    duaaContainer.className = "text-center p-4 mt-4 bg-gray-200 text-gray-800";
 
     const duaaParagraph = document.createElement("p");
     duaaParagraph.id = "duaa-text";
     duaaParagraph.textContent = duaaText;
 
-    newContainer.appendChild(duaaParagraph);
-    document.body.appendChild(newContainer);
+    duaaContainer.appendChild(duaaParagraph);
+    document.body.appendChild(duaaContainer);
   } else {
     const duaaParagraph = duaaContainer.querySelector("#duaa-text");
     duaaParagraph.textContent = duaaText;
   }
 }
 
-// Call once on load, and every 3 seconds
 window.onload = () => {
   addDuaa();
   setInterval(addDuaa, 3000);
