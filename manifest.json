@@ -1,11 +1,11 @@
 {
-  "name": "Quran Kareem",
+  "name": "Quran Navigator",
   "short_name": "Quran",
-  "description": "A website to read the Quran offline",
+  "description": "A Quran reader with offline capabilities.",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#4CAF50",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
