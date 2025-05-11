@@ -128,8 +128,7 @@ function addDuaa() {
 // Call the function to add duaa when the page loads
 window.onload = () => {
   addDuaa(); // Add initial duaa
-  const generateButton = document.getElementById("generate-duaa");
-  if (generateButton) {
-    generateButton.addEventListener("click", addDuaa); // Add event listener to generate button
-  }
+
+  // Change duaa every 4 seconds
+  setInterval(addDuaa, 4000);
 };
