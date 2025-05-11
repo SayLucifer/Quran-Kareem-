@@ -35,9 +35,9 @@ fetch("https://api.alquran.cloud/v1/surah")
     data.data.forEach(surah => {
       const li = document.createElement("li");
       const a = document.createElement("a");
-      a.href = surah${surah.number}.html;  // Navigate to Surah page
+      a.href = `surah${surah.number}.html`;  // Navigate to Surah page
       a.className = "text-blue-600 hover:text-blue-800 visited:text-purple-600 rounded-md px-3 py-1 bg-white hover:bg-gray-100 transition-colors duration-200 shadow";
-      a.textContent = ${surah.number}. ${surah.name};
+      a.textContent = `${surah.number}. ${surah.name}`;
       
       // Create a bookmark button for each surah
       const bookmarkButton = document.createElement("button");
@@ -45,17 +45,17 @@ fetch("https://api.alquran.cloud/v1/surah")
       bookmarkButton.className = "ml-2 bg-green-500 text-white px-2 py-1 rounded";
       
       // Check if the Surah is already bookmarked
-      if (localStorage.getItem(bookmark_${surah.number})) {
+      if (localStorage.getItem(`bookmark_${surah.number}`)) {
         bookmarkButton.textContent = "✅ Bookmarked";
       }
 
       bookmarkButton.addEventListener("click", () => {
-        const isBookmarked = localStorage.getItem(bookmark_${surah.number});
+        const isBookmarked = localStorage.getItem(`bookmark_${surah.number}`);
         if (isBookmarked) {
-          localStorage.removeItem(bookmark_${surah.number});
+          localStorage.removeItem(`bookmark_${surah.number}`);
           bookmarkButton.textContent = "📌";
         } else {
-          localStorage.setItem(bookmark_${surah.number}, surah.name);
+          localStorage.setItem(`bookmark_${surah.number}`, surah.name);
           bookmarkButton.textContent = "✅ Bookmarked";
         }
       });
@@ -129,6 +129,6 @@ function addDuaa() {
 window.onload = () => {
   addDuaa(); // Add initial duaa
 
-  // Change duaa every 3 seconds
-  setInterval(addDuaa, 3000);
+  // Change duaa every 4 seconds
+  setInterval(addDuaa, 4000);
 };
