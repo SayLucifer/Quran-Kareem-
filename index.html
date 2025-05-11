@@ -4,8 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quran Navigator</title>
+  
+  <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap" rel="stylesheet">
+  
+  <!-- Manifest link -->
+  <link rel="manifest" href="/manifest.json">
+  
   <style>
     body {
       font-family: 'Scheherazade New', serif;
@@ -83,6 +91,17 @@
       .catch(() => {
         listContainer.innerHTML = "<li>تعذر تحميل البيانات. تحقق من الاتصال بالإنترنت.</li>";
       });
+
+    // Register the service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('Service Worker registration failed:', error);
+        });
+    }
   </script>
 </body>
 </html>
